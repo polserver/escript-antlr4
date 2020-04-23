@@ -1,0 +1,3 @@
+# All antlr4 generated files go in this directory
+*
+!.gitignore

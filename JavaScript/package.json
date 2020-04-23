@@ -1,0 +1,34 @@
+{
+	"name": "escript-antlr4",
+	"version": "0.1.0",
+	"description": "An Escript lexer & parser that provides both visitor and listener patterns to traverse the parse tree.",
+	"main": "./lib/main.js",
+	"types": "./lib/main.d.ts",
+	"contributors": [
+		{
+			"name": "Kevin Eady",
+			"url": "https://github.com/KevinEady"
+		}
+	],
+	"repository": "https://github.com/polserver/escript-antlr4.git",
+	"license": "Unlicense",
+	"scripts": {
+		"prepublishOnly": "npm run clean && npm run compile",
+		"precompile": "cd .. && ./JavaScript/node_modules/.bin/antlr4ts -o ./JavaScript/out -visitor EscriptLexer.g4 EscriptParser.g4 && cd JavaScript && cp ./out/*.ts ./src/antlr",
+		"compile": "tsc -b",
+		"watch": "tsc -b -w",
+		"clean": "rimraf out lib && rimraf src/antlr/*"
+	},
+	"devDependencies": {
+		"antlr4ts-cli": "^0.5.0-alpha.3",
+		"rimraf": "^3.0.2",
+		"typescript": "^3.8.3",
+		"antlr4ts": "^0.5.0-alpha.3"
+	},
+	"engines": {
+		"node": ">=12.9.0"
+	},
+	"peerDependencies": {
+		"antlr4ts": "^0.5.0-alpha.3"
+	}
+}

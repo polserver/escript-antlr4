@@ -1,0 +1,17 @@
+{
+    "compilerOptions": {
+        "target": "es2019",
+        "module": "commonjs",
+        "moduleResolution": "node",
+        "sourceMap": false,
+        "inlineSources": false,
+        "declaration": true,
+        "stripInternal": true,
+        "lib": ["es2020"],
+        "outDir": "./lib",
+        "incremental": true
+    },
+    "include": [
+        "./src"
+    ]
+}
