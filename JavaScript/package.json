@@ -1,6 +1,6 @@
 {
 	"name": "escript-antlr4",
-	"version": "0.1.0",
+	"version": "0.1.1",
 	"description": "An Escript lexer & parser that provides both visitor and listener patterns to traverse the parse tree.",
 	"main": "./lib/main.js",
 	"types": "./lib/main.d.ts",
