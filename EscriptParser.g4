@@ -24,7 +24,7 @@ moduleDeclarationStatement
     ;
 
 moduleFunctionDeclaration
-    : methodCall ';'
+    : IDENTIFIER '(' variableDeclarationList? ')' ';'
     ;
 
 unitExpression
@@ -67,29 +67,89 @@ programDeclaration
 
 // TODO maybe split these all into individual statements?
 statement
-    : IF parExpression THEN? block (ELSEIF parExpression block)* (ELSE block)? ENDIF
-    | GOTO IDENTIFIER ';'
-    | RETURN expression? ';'
+    : ifStatement
+    | gotoStatement
+    | returnStatement
     | constStatement
-    | VAR variableDeclarationList ';'
-    | DO block DOWHILE parExpression ';'
-    | WHILE parExpression block ENDWHILE
-    | EXIT ';'
-    | DECLARE FUNCTION identifierList ';' 
-    | BREAK IDENTIFIER? ';'
-    | CONTINUE IDENTIFIER? ';'
-    | FOR forStatement ENDFOR
-    | FOREACH IDENTIFIER IN expression block ENDFOREACH
-    | REPEAT block UNTIL expression ';'
-    | CASE '(' expression ')' switchBlockStatementGroup+ ENDCASE
-    | ENUM IDENTIFIER enumList? ENDENUM
+    | varStatement
+    | doStatement
+    | whileStatement
+    | exitStatement
+    | declareStatement
+    | breakStatement
+    | continueStatement
+    | forStatement
+    | foreachStatement
+    | repeatStatement
+    | caseStatement
+    | enumStatement
     | SEMI
     | statementExpression=expression ';'
     | IDENTIFIER ':' statement
     ;
 
+ifStatement
+    : IF parExpression THEN? block (ELSEIF parExpression block)* (ELSE block)? ENDIF
+    ;
+
+gotoStatement
+    : GOTO IDENTIFIER ';'
+    ;
+
+returnStatement
+    : RETURN expression? ';'
+    ;
+
 constStatement
     : CONST variableDeclaration ';' 
+    ;
+
+varStatement
+    : VAR variableDeclarationList ';'
+    ;
+
+doStatement
+    : DO block DOWHILE parExpression ';'
+    ;
+
+whileStatement
+    : WHILE parExpression block ENDWHILE
+    ;
+
+exitStatement
+    : EXIT ';'
+    ;
+
+declareStatement
+    : DECLARE FUNCTION identifierList ';' 
+    ;
+
+breakStatement
+    : BREAK IDENTIFIER? ';'
+    ;
+
+continueStatement
+    : CONTINUE IDENTIFIER? ';'
+    ;
+
+forStatement
+    : FOR forGroup ENDFOR
+    ;
+
+foreachStatement
+    : FOREACH IDENTIFIER IN expression block ENDFOREACH
+    ;
+
+repeatStatement
+    : REPEAT block UNTIL expression ';'
+    ;
+
+caseStatement
+    : CASE '(' expression ')' switchBlockStatementGroup+ ENDCASE
+    ;
+
+enumStatement
+    : ENUM IDENTIFIER enumList? ENDENUM
     ;
 
 block
@@ -118,7 +178,7 @@ switchLabel
     | DEFAULT ':'
     ;
 
-forStatement
+forGroup
     : cstyleForStatement 
     | basicForStatement
     ;
@@ -268,7 +328,6 @@ literal
     | floatLiteral
     | CHAR_LITERAL
     | STRING_LITERAL
-    | BOOL_LITERAL
     | NULL_LITERAL
     ;
 
