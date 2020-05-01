@@ -283,12 +283,8 @@ expressionList
     : expression (',' expression)*
     ;
 
-methodCallExpressionList
-    : expression? (',' expression?)*
-    ;
-
 methodCall
-    : IDENTIFIER '(' methodCallExpressionList ')'
+    : IDENTIFIER '(' expressionList? ')'
     ;
 
 structInitializerExpression
