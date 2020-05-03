@@ -1,4 +1,5 @@
 lexer grammar EscriptLexer;
+channels { COMMENTS }
 
 // Keywords
 
@@ -153,8 +154,8 @@ DEC:                '--';
 // Whitespace and comments
 
 WS:                 [ \t\r\n\u000C]+ -> channel(HIDDEN);
-COMMENT:            '/*' .*? '*/'    -> channel(HIDDEN);
-LINE_COMMENT:       '//' ~[\r\n]*    -> channel(HIDDEN);
+COMMENT:            '/*' .*? '*/'    -> channel(COMMENTS);
+LINE_COMMENT:       '//' ~[\r\n]*    -> channel(COMMENTS);
 
 // Identifiers
 
