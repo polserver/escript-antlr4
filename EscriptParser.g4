@@ -24,7 +24,15 @@ moduleDeclarationStatement
     ;
 
 moduleFunctionDeclaration
-    : IDENTIFIER '(' variableDeclarationList? ')' ';'
+    : IDENTIFIER '(' moduleFunctionParameterList? ')' ';'
+    ;
+
+moduleFunctionParameterList
+    : moduleFunctionParameter (',' moduleFunctionParameter)*
+    ;
+
+moduleFunctionParameter
+    : IDENTIFIER (':=' expression)?
     ;
 
 unitExpression
@@ -248,7 +256,7 @@ expression
     | STRUCT structInitializer?
     | DICTIONARY dictInitializer?
     | ERROR structInitializer?
-    | '{' expressionList* '}'
+    | '{' expressionList? '}'
     | '@' IDENTIFIER
     | expression postfix=('++' | '--')
     | prefix=('+'|'-'|'++'|'--') expression
@@ -297,7 +305,7 @@ structInitializerExpressionList
     ;
 
 structInitializer
-    : '{' structInitializerExpressionList* '}'
+    : '{' structInitializerExpressionList? '}'
     ;
 
 dictInitializerExpression
@@ -309,12 +317,12 @@ dictInitializerExpressionList
     ;
 
 dictInitializer
-    : '{' dictInitializerExpressionList* '}'
+    : '{' dictInitializerExpressionList? '}'
     ;
 
 arrayInitializer
-    : '{' expressionList* '}'
-    | '(' expressionList* ')'
+    : '{' expressionList? '}'
+    | '(' expressionList? ')'
     ;
 
 // Literals
