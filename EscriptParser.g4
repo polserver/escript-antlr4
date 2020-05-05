@@ -157,7 +157,7 @@ caseStatement
     ;
 
 enumStatement
-    : ENUM IDENTIFIER enumList? ENDENUM
+    : ENUM IDENTIFIER enumList ENDENUM
     ;
 
 block
@@ -170,11 +170,11 @@ variableDeclarationInitializer
     ;
 
 enumList
-    : enumListEntry+ ','?
+    : enumListEntry (',' enumListEntry)*
     ;
 
 enumListEntry
-    : IDENTIFIER (':=' expression)? (',' enumListEntry)*
+    : IDENTIFIER (':=' expression)?
     ;
 
 switchBlockStatementGroup
