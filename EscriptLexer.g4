@@ -12,7 +12,7 @@ ELSE:               'else';
 GOTO:               'goto';
 // GOSUB:              'gosub'; // not used??
 RETURN:             'return';
-CONST:              'const';
+TOK_CONST:          'const';
 VAR:                'var';
 DO:                 'do';
 DOWHILE:            'dowhile';
@@ -47,11 +47,11 @@ ENDENUM:            'endenum';
 DOWNTO:             'downto';
 STEP:               'step';
 REFERENCE:          'reference';
-OUT:                'out';
-INPUT:              'inout';
+TOK_OUT:            'out';
+INOUT:              'inout';
 BYVAL:              'ByVal';
 STRING:             'string';
-LONG:               'long';
+TOK_LONG:           'long';
 INTEGER:            'integer';
 UNSIGNED:           'unsigned';
 SIGNED:             'signed';
@@ -73,13 +73,13 @@ BANG_B:             'not';
 fragment BANG:      '!' | 'not';
 BYREF:              'byref';
 UNUSED:             'unused';
-ERROR:              'error';
+TOK_ERROR:          'error';
 HASH:               'hash';
 DICTIONARY:         'dictionary';
 STRUCT:             'struct';
 ARRAY:              'array';
 STACK:              'stack';
-IN:                 'in';
+TOK_IN:             'in';
 
 // Literals
 
