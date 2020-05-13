@@ -247,7 +247,7 @@ expression
     | expression bop='.'
       ( IDENTIFIER
       | STRING_LITERAL
-      | methodCall
+      | memberCall
       )
     | expression '[' expressionList ']'
     | methodCall
@@ -291,7 +291,19 @@ expressionList
     : expression (',' expression)*
     ;
 
+methodCallArgument
+    : (parameter=IDENTIFIER ':=')? expression
+    ;
+
+methodCallArgumentList
+    : methodCallArgument (',' methodCallArgument)*
+    ;
+
 methodCall
+    : IDENTIFIER '(' methodCallArgumentList? ')'
+    ;
+
+memberCall
     : IDENTIFIER '(' expressionList? ')'
     ;
 
