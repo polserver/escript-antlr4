@@ -1,0 +1,46 @@
+diff --git a/EscriptParser.g4 b/EscriptParser.g4
+index f845e38..b321924 100644
+--- a/EscriptParser.g4
++++ b/EscriptParser.g4
+@@ -1,4 +1,4 @@
+-parser grammar EscriptParser;
++parser grammar EscriptLooseParser;
+ 
+ options { tokenVocab=EscriptLexer; }
+ 
+@@ -242,12 +242,17 @@ scopedMethodCall
+     : IDENTIFIER '::' methodCall
+     ;
+ 
++missingToken
++    :
++    ;
++
+ expression
+     : primary
+     | expression bop='.'
+       ( IDENTIFIER
+       | STRING_LITERAL
+       | memberCall
++      | missingToken
+       )
+     | expression '[' expressionList ']'
+     | methodCall
+@@ -289,7 +294,7 @@ parExpression
+     ;
+ 
+ expressionList
+-    : expression (',' expression)*
++    : expression (',' expression?)*
+     ;
+ 
+ methodCallArgument
+@@ -297,7 +302,7 @@ methodCallArgument
+     ;
+ 
+ methodCallArgumentList
+-    : methodCallArgument (',' methodCallArgument)*
++    : methodCallArgument (',' methodCallArgument?)*
+     ;
+ 
+ methodCall

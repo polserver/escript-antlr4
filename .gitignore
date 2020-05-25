@@ -1,3 +1,4 @@
 # Opening the grammar files in VS Code's ANTLR extension creates a local .antlr
 # folder for real-time intellisense help.
 .antlr
+EscriptLooseParser.g4

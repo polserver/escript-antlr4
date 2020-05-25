@@ -14,7 +14,7 @@
 	"license": "Unlicense",
 	"scripts": {
 		"prepublishOnly": "npm run clean && npm run compile",
-		"precompile": "cd .. && ./JavaScript/node_modules/.bin/antlr4ts -o ./JavaScript/out -visitor EscriptLexer.g4 EscriptParser.g4 && cd JavaScript && cp ./out/*.ts ./src/antlr",
+		"precompile": "cd .. && rm -rf EscriptLooseParser.g4 && patch -p1 EscriptParser.g4 loose.patch -o EscriptLooseParser.g4 && ./JavaScript/node_modules/.bin/antlr4ts -o ./JavaScript/out -visitor EscriptLexer.g4 EscriptParser.g4 EscriptLooseParser.g4 && cd JavaScript && cp ./out/*.ts ./src/antlr",
 		"compile": "tsc -b",
 		"watch": "tsc -b -w",
 		"clean": "rimraf out lib && rimraf src/antlr/*"
