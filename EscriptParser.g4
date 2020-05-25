@@ -109,7 +109,7 @@ returnStatement
     ;
 
 constStatement
-    : CONST variableDeclaration ';' 
+    : TOK_CONST variableDeclaration ';'
     ;
 
 varStatement
@@ -145,7 +145,7 @@ forStatement
     ;
 
 foreachStatement
-    : FOREACH IDENTIFIER IN expression block ENDFOREACH
+    : FOREACH IDENTIFIER TOK_IN expression block ENDFOREACH
     ;
 
 repeatStatement
@@ -255,7 +255,7 @@ expression
     | ARRAY arrayInitializer?
     | STRUCT structInitializer?
     | DICTIONARY dictInitializer?
-    | ERROR structInitializer?
+    | TOK_ERROR structInitializer?
     | '{' expressionList? '}'
     | '@' IDENTIFIER
     | expression postfix=('++' | '--')
