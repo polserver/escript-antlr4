@@ -93,7 +93,10 @@ statement
     | enumStatement
     | SEMI
     | statementExpression=expression ';'
-    | IDENTIFIER ':' statement
+    ;
+
+statementLabel
+    : IDENTIFIER ':'
     ;
 
 ifStatement
@@ -117,11 +120,11 @@ varStatement
     ;
 
 doStatement
-    : DO block DOWHILE parExpression ';'
+    : statementLabel? DO block DOWHILE parExpression ';'
     ;
 
 whileStatement
-    : WHILE parExpression block ENDWHILE
+    : statementLabel? WHILE parExpression block ENDWHILE
     ;
 
 exitStatement
@@ -141,19 +144,19 @@ continueStatement
     ;
 
 forStatement
-    : FOR forGroup ENDFOR
+    : statementLabel? FOR forGroup ENDFOR
     ;
 
 foreachStatement
-    : FOREACH IDENTIFIER TOK_IN expression block ENDFOREACH
+    : statementLabel? FOREACH IDENTIFIER TOK_IN expression block ENDFOREACH
     ;
 
 repeatStatement
-    : REPEAT block UNTIL expression ';'
+    : statementLabel? REPEAT block UNTIL expression ';'
     ;
 
 caseStatement
-    : CASE '(' expression ')' switchBlockStatementGroup+ ENDCASE
+    : statementLabel? CASE '(' expression ')' switchBlockStatementGroup+ ENDCASE
     ;
 
 enumStatement
@@ -170,7 +173,7 @@ variableDeclarationInitializer
     ;
 
 enumList
-    : enumListEntry (',' enumListEntry)*
+    : enumListEntry (',' enumListEntry)* ','?
     ;
 
 enumListEntry
