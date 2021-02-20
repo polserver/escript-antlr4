@@ -11,7 +11,7 @@ options { tokenVocab=EscriptLexer; }
 }
 
 compilationUnit
-    : topLevelDeclaration* unitExpression? EOF
+    : topLevelDeclaration* EOF
     ;
 
 moduleUnit
@@ -33,10 +33,6 @@ moduleFunctionParameterList
 
 moduleFunctionParameter
     : IDENTIFIER (':=' expression)?
-    ;
-
-unitExpression
-    : expression ';'?
     ;
 
 topLevelDeclaration
@@ -83,7 +79,6 @@ statement
     | doStatement
     | whileStatement
     | exitStatement
-    | declareStatement
     | breakStatement
     | continueStatement
     | forStatement
@@ -131,10 +126,6 @@ exitStatement
     : EXIT ';'
     ;
 
-declareStatement
-    : DECLARE FUNCTION identifierList ';' 
-    ;
-
 breakStatement
     : BREAK IDENTIFIER? ';'
     ;
@@ -147,8 +138,17 @@ forStatement
     : statementLabel? FOR forGroup ENDFOR
     ;
 
+foreachIterableExpression
+    : functionCall
+    | scopedFunctionCall
+    | IDENTIFIER
+    | parExpression
+    | bareArrayInitializer
+    | explicitArrayInitializer
+    ;
+
 foreachStatement
-    : statementLabel? FOREACH IDENTIFIER TOK_IN expression block ENDFOREACH
+    : statementLabel? FOREACH IDENTIFIER TOK_IN foreachIterableExpression block ENDFOREACH
     ;
 
 repeatStatement
@@ -169,6 +169,7 @@ block
 
 variableDeclarationInitializer
     : ':=' expression
+    | '=' expression { this.notifyErrorListeners("Unexpected token: '='. Did you mean := for assign?\n"); }
     | ARRAY
     ;
 
@@ -190,12 +191,12 @@ switchLabel
     ;
 
 forGroup
-    : cstyleForStatement 
+    : cstyleForStatement
     | basicForStatement
     ;
 
 basicForStatement
-    : IDENTIFIER ':=' expression TO expression block 
+    : IDENTIFIER ':=' expression TO expression block
     ;
 
 cstyleForStatement
@@ -235,44 +236,32 @@ functionParameterList
     ;
 
 functionParameter
-    : BYREF? IDENTIFIER (':=' expression)?
-    | UNUSED IDENTIFIER
+    : BYREF? UNUSED? IDENTIFIER (':=' expression)?
     ;
 
 // EXPRESSIONS
 
-scopedMethodCall
-    : IDENTIFIER '::' methodCall
+scopedFunctionCall
+    : IDENTIFIER '::' functionCall
+    ;
+
+functionReference
+    : '@' IDENTIFIER
     ;
 
 expression
     : primary
-    | expression bop='.'
-      ( IDENTIFIER
-      | STRING_LITERAL
-      | memberCall
-      )
-    | expression '[' expressionList ']'
-    | methodCall
-    | scopedMethodCall
-    | ARRAY arrayInitializer?
-    | STRUCT structInitializer?
-    | DICTIONARY dictInitializer?
-    | TOK_ERROR structInitializer?
-    | '{' expressionList? '}'
-    | '@' IDENTIFIER
+    | expression expressionSuffix
     | expression postfix=('++' | '--')
     | prefix=('+'|'-'|'++'|'--') expression
     | prefix=('~'|'!'|'not') expression
-    | expression bop=('*'|'/'|'%') expression
-    | expression bop=('+'|'-') expression
-    | expression bop=('<<' | '>>') expression
-    | expression bop=('<=' | '>=' | '>' | '<') expression
-    | expression bop=('==' | '!=' | '<>') expression
-    | expression bop='&' expression
-    | expression bop='^' expression
-    | expression bop='|' expression
+    | expression bop=('*' | '/' | '%' | '<<' | '>>' | '&') expression
+    | expression bop=('+' | '-' | '|' | '^') expression
+    | expression bop='?:' expression
     | expression bop='in' expression
+    | expression bop=('<=' | '>=' | '>' | '<') expression
+    | expression bop='=' { this.notifyErrorListeners("Deprecated '=' found: did you mean '==' or ':='?\n"); } expression
+    | expression bop=('==' | '!=' | '<>') expression
     | expression bop=('&&' | 'and') expression
     | expression bop=('||' | 'or') expression
     | <assoc=right> expression bop=('.+' | '.-' | '.?') expression
@@ -282,9 +271,38 @@ expression
     ;
 
 primary
-    : '(' expression ')'
-    | literal
+    : literal
+    | parExpression
+    | functionCall
+    | scopedFunctionCall
     | IDENTIFIER
+    | functionReference
+    | explicitArrayInitializer
+    | explicitStructInitializer
+    | explicitDictInitializer
+    | explicitErrorInitializer
+    | bareArrayInitializer
+    ;
+
+explicitArrayInitializer
+    : ARRAY arrayInitializer?
+    ;
+
+explicitStructInitializer
+    : STRUCT structInitializer?
+    ;
+
+explicitDictInitializer
+    : DICTIONARY dictInitializer?
+    ;
+
+explicitErrorInitializer
+    : TOK_ERROR structInitializer?
+    ;
+
+bareArrayInitializer
+    : LBRACE expressionList? RBRACE
+    | LBRACE expressionList? ',' RBRACE {this.notifyErrorListeners("Expected expression following comma before right-brace in array initializer list");}
     ;
 
 parExpression
@@ -295,19 +313,25 @@ expressionList
     : expression (',' expression)*
     ;
 
-methodCallArgument
-    : (parameter=IDENTIFIER ':=')? expression
+expressionSuffix
+    : indexingSuffix
+    | methodCallSuffix
+    | navigationSuffix
     ;
 
-methodCallArgumentList
-    : methodCallArgument (',' methodCallArgument)*
+indexingSuffix
+    : LBRACK expressionList RBRACK
     ;
 
-methodCall
-    : IDENTIFIER '(' methodCallArgumentList? ')'
+navigationSuffix
+    : '.' ( IDENTIFIER | STRING_LITERAL )
     ;
 
-memberCall
+methodCallSuffix
+    : '.' IDENTIFIER LPAREN expressionList? RPAREN
+    ;
+
+functionCall
     : IDENTIFIER '(' expressionList? ')'
     ;
 
@@ -322,6 +346,7 @@ structInitializerExpressionList
 
 structInitializer
     : '{' structInitializerExpressionList? '}'
+    | '{' structInitializerExpressionList? ',' '}' {this.notifyErrorListeners("Expected expression following comma before right-brace in struct initializer list");}
     ;
 
 dictInitializerExpression
@@ -334,11 +359,14 @@ dictInitializerExpressionList
 
 dictInitializer
     : '{' dictInitializerExpressionList? '}'
+    | '{' dictInitializerExpressionList? ',' '}' {this.notifyErrorListeners("Expected expression following comma before right-brace in dictionary initializer list");}
     ;
 
 arrayInitializer
     : '{' expressionList? '}'
+    | '{' expressionList? ',' '}' {this.notifyErrorListeners("Expected expression following comma before right-brace in array initializer list");}
     | '(' expressionList? ')'
+    | '(' expressionList? ',' ')' {this.notifyErrorListeners("Expected expression following comma before right-paren in array initializer list");}
     ;
 
 // Literals
@@ -348,7 +376,6 @@ literal
     | floatLiteral
     | CHAR_LITERAL
     | STRING_LITERAL
-    | NULL_LITERAL
     ;
 
 integerLiteral
