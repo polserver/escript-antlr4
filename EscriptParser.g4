@@ -169,7 +169,7 @@ block
 
 variableDeclarationInitializer
     : ':=' expression
-    | '=' expression { notifyErrorListeners("Unexpected token: '='. Did you mean := for assign?\n"); }
+    | '=' expression { this.notifyErrorListeners("Unexpected token: '='. Did you mean := for assign?\n"); }
     | ARRAY
     ;
 
@@ -191,12 +191,12 @@ switchLabel
     ;
 
 forGroup
-    : cstyleForStatement 
+    : cstyleForStatement
     | basicForStatement
     ;
 
 basicForStatement
-    : IDENTIFIER ':=' expression TO expression block 
+    : IDENTIFIER ':=' expression TO expression block
     ;
 
 cstyleForStatement
@@ -260,7 +260,7 @@ expression
     | expression bop='?:' expression
     | expression bop='in' expression
     | expression bop=('<=' | '>=' | '>' | '<') expression
-    | expression bop='=' { notifyErrorListeners("Deprecated '=' found: did you mean '==' or ':='?\n"); } expression
+    | expression bop='=' { this.notifyErrorListeners("Deprecated '=' found: did you mean '==' or ':='?\n"); } expression
     | expression bop=('==' | '!=' | '<>') expression
     | expression bop=('&&' | 'and') expression
     | expression bop=('||' | 'or') expression
@@ -302,7 +302,7 @@ explicitErrorInitializer
 
 bareArrayInitializer
     : LBRACE expressionList? RBRACE
-    | LBRACE expressionList? ',' RBRACE {notifyErrorListeners("Expected expression following comma before right-brace in array initializer list");}
+    | LBRACE expressionList? ',' RBRACE {this.notifyErrorListeners("Expected expression following comma before right-brace in array initializer list");}
     ;
 
 parExpression
@@ -346,7 +346,7 @@ structInitializerExpressionList
 
 structInitializer
     : '{' structInitializerExpressionList? '}'
-    | '{' structInitializerExpressionList? ',' '}' {notifyErrorListeners("Expected expression following comma before right-brace in struct initializer list");}
+    | '{' structInitializerExpressionList? ',' '}' {this.notifyErrorListeners("Expected expression following comma before right-brace in struct initializer list");}
     ;
 
 dictInitializerExpression
@@ -359,14 +359,14 @@ dictInitializerExpressionList
 
 dictInitializer
     : '{' dictInitializerExpressionList? '}'
-    | '{' dictInitializerExpressionList? ',' '}' {notifyErrorListeners("Expected expression following comma before right-brace in dictionary initializer list");}
+    | '{' dictInitializerExpressionList? ',' '}' {this.notifyErrorListeners("Expected expression following comma before right-brace in dictionary initializer list");}
     ;
 
 arrayInitializer
     : '{' expressionList? '}'
-    | '{' expressionList? ',' '}' {notifyErrorListeners("Expected expression following comma before right-brace in array initializer list");}
+    | '{' expressionList? ',' '}' {this.notifyErrorListeners("Expected expression following comma before right-brace in array initializer list");}
     | '(' expressionList? ')'
-    | '(' expressionList? ',' ')' {notifyErrorListeners("Expected expression following comma before right-paren in array initializer list");}
+    | '(' expressionList? ',' ')' {this.notifyErrorListeners("Expected expression following comma before right-paren in array initializer list");}
     ;
 
 // Literals
