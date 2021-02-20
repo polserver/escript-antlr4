@@ -1,6 +1,6 @@
 {
 	"name": "escript-antlr4",
-	"version": "0.1.7",
+	"version": "0.2.0",
 	"description": "An Escript lexer & parser that provides both visitor and listener patterns to traverse the parse tree.",
 	"main": "./lib/main.js",
 	"types": "./lib/main.d.ts",
@@ -14,16 +14,16 @@
 	"license": "Unlicense",
 	"scripts": {
 		"prepublishOnly": "npm run clean && npm run compile",
-		"precompile": "cd .. && rm -rf EscriptLooseParser.g4 && patch -p1 EscriptParser.g4 loose.patch -o EscriptLooseParser.g4 && ./JavaScript/node_modules/.bin/antlr4ts -o ./JavaScript/out -visitor EscriptLexer.g4 EscriptParser.g4 EscriptLooseParser.g4 && cd JavaScript && cp ./out/*.ts ./src/antlr",
+		"precompile": "cd .. && ./JavaScript/node_modules/.bin/antlr4ts -o ./JavaScript/out -visitor EscriptLexer.g4 EscriptParser.g4 && cd JavaScript && cp ./out/*.ts ./src/antlr",
 		"compile": "tsc -b",
 		"watch": "tsc -b -w",
 		"clean": "rimraf out lib && rimraf src/antlr/*"
 	},
 	"devDependencies": {
+		"antlr4ts": "^0.5.0-alpha.3",
 		"antlr4ts-cli": "^0.5.0-alpha.3",
 		"rimraf": "^3.0.2",
-		"typescript": "^3.8.3",
-		"antlr4ts": "^0.5.0-alpha.3"
+		"typescript": "^3.8.3"
 	},
 	"engines": {
 		"node": ">=12.9.0"
